@@ -1,20 +1,31 @@
-const API_KEY = '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'
+const http = require('https');
 
-async function fetchData() {
-    const response = await fetch("https://api.openai.com/v1/completions", {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model: "text-davinci-003",
-            prompt: "hello, how are you today?",
-            max_tokens: 7 
-        })
-    })
-    const data = await response.json()
-    console.log(data)
-}
+const options = {
+	method: 'POST',
+	hostname: 'open-ai-chatgpt.p.rapidapi.com',
+	port: null,
+	path: '/ask',
+	headers: {
+		'content-type': 'application/json',
+		'X-RapidAPI-Key': '19849fdc6amsh680782c8e2855b8p1db992jsn439c639be4ee',
+		'X-RapidAPI-Host': 'open-ai-chatgpt.p.rapidapi.com'
+	}
+};
 
-fetchData()
+const req = http.request(options, function (res) {
+	const chunks = [];
+
+	res.on('data', function (chunk) {
+		chunks.push(chunk);
+	});
+
+	res.on('end', function () {
+		const body = Buffer.concat(chunks);
+		console.log(body.toString());
+	});
+});
+
+req.write(JSON.stringify({
+  query: 'How many planets are in our solar system?'
+}));
+req.end();
